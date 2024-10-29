@@ -1,0 +1,5 @@
+/.idea
+.DS_store
+__pycache__
+/archive.zip
+/archive/

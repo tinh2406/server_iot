@@ -4,7 +4,7 @@ import classifier_service
 
 app = Flask(__name__)
 
-# Định nghĩa endpoint '/process-array' nhận mảng từ request
+# Định nghĩa endpoint '/predict' nhận mảng từ request
 @app.route('/predict', methods=['POST'])
 def process_array():
     data = request.get_json()

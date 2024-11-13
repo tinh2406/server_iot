@@ -33,7 +33,7 @@ def predict(values):
 
     cycles = []
     for peak in rpeaks:
-        left, right = peak, peak + mode + 10
+        left, right = peak, peak + mode + 4
         if np.all([left > 0, right < len(values)]):
             cycles.append(values[left:right])
 

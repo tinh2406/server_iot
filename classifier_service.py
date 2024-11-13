@@ -7,8 +7,8 @@ load_model = keras.models.load_model(f'my_model.keras')
 
 
 # Sample frequency and loading signal data
-sr = 200  # sample frequency
-MIN_DIFF = 16  # Minimum distance for peak adjustment
+sr = 125  # sample frequency
+MIN_DIFF = 80  # Minimum distance for peak adjustment
 mode = 160  # Mode for peak adjustment
 
 mapping = {
@@ -24,10 +24,12 @@ def predict(values):
     :param values list[float]: list of values
     :return: label
     """
+    values = values/np.max(values)
+
     _, rpeaks = nk.ecg_peaks(values, sampling_rate=sr)
     rpeaks = rpeaks['ECG_R_Peaks'].astype(int)
 
-    mode = 160
+    mode = 100
 
     cycles = []
     for peak in rpeaks:
@@ -36,11 +38,13 @@ def predict(values):
             cycles.append(values[left:right])
 
     data = np.array(cycles)
+    data = np.pad(data, ((0, 0), (0, 187 - data.shape[1])), 'constant', constant_values=0)
+
     prediction = load_model.predict(data)
 
     indexs = np.argmax(prediction, axis=1)
     
-    unique, counts = np.unique(index, return_counts=True)
+    unique, counts = np.unique(indexs, return_counts=True)
     most_frequent_label = unique[np.argmax(counts)]
 
     return mapping[most_frequent_label], [mapping[i] for i in indexs]
